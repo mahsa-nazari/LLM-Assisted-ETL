@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View/Edit Schema</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .button-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sample-rows-button {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+        }
+        .sample-rows-button input[type="number"] {
+            width: 60px;
+            padding: 2px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .sample-rows-button button {
+            background: none;
+            border: none;
+            font: inherit;
+            cursor: pointer;
+            color: inherit;
+            padding: 0;
+        }
+        .sample-rows-button label {
+            font-weight: bold;
+        }
+        pre {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: auto;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>View/Edit Schema</h1>
+
+        <!-- Display Current Schema -->
+        <h2>Current Schema</h2>
+        <pre>{{ current_schema }}</pre>
+
+        <!-- Form to Edit Schema -->
+        <h2>Edit Schema</h2>
+        <form method="POST">
+            <textarea 
+                name="schema" 
+                rows="20" 
+                cols="80" 
+                style="width: 100%; margin-bottom: 15px;">{{ schema }}</textarea>
+            
+            <!-- Button Group -->
+            <div class="button-group">
+                <button type="submit" name="save_schema">Update Schema</button>
+                <div class="sample-rows-button">
+                    <label for="sample_rows">Number of Sample Rows:</label>
+                    <input 
+                        type="number" 
+                        id="sample_rows" 
+                        name="sample_rows" 
+                        value="{{ sample_rows }}" 
+                        min="3" 
+                        required>
+                    <button type="submit" name="update_sample_rows">Update</button>
+                </div>
+                <button type="submit" name="apply_postgres">Apply to PostgreSQL</button>
+                <a href="/" class="button">Back to Dashboard</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

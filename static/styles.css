@@ -1,0 +1,172 @@
+/* General Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9; /* Light sage background */
+    color: #333;
+}
+
+/* Main Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full viewport height */
+    margin: 20px; /* Add margin around the container for breathing space */
+}
+
+/* Top Section for Main Content */
+.top-section {
+    flex: 50%; /* % height for the top section */
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: auto; /* Allow content to scroll if needed */
+    margin-bottom: 10px; /* Add spacing below the top section */
+}
+
+/* Bottom Section for Logs */
+.bottom-section {
+    flex: 50%; /* % height for logs */
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #ddd;
+    overflow: auto;
+    margin-top: 10px; /* Add spacing above the bottom section */
+}
+
+/* Logs Styling */
+.logs-container {
+    height: 100%;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 14px;
+    color: #333;
+    overflow-y: scroll; /* Enable vertical scrolling for logs */
+    margin: 10px; /* Add margin around the logs for spacing */
+}
+
+/* Scrollbar Customization */
+.logs-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.logs-container::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 3px;
+}
+
+/* Scroll to the bottom by default */
+.logs-container {
+    display: flex;
+    flex-direction: column-reverse; /* Automatically show the latest logs */
+}
+
+/* Headings */
+h1 {
+    text-align: center;
+    color: #305252; /* Dark sage green */
+    margin: 20px 0; /* Add spacing above and below the heading */
+}
+
+/* Menu Items */
+.menu {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    margin: 20px 0; /* Add spacing around the menu */
+}
+
+.menu li {
+    display: inline-block;
+    margin: 10px; /* Add spacing between menu items */
+}
+
+/* Links and Buttons */
+a, button {
+    text-decoration: none;
+    background-color: #6B7D7D; /* Sage green */
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+    margin: 5px; /* Add spacing around buttons */
+}
+
+a:hover, button:hover {
+    background-color: #305252; /* Darker sage green */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Elevated shadow on hover */
+}
+
+a.disabled, a.disabled:hover {
+    background-color: #cccccc; /* Grey for disabled buttons */
+    pointer-events: none; /* Disable interaction */
+}
+
+/* Buttons in Form Alignment */
+.button-group {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    gap: 15px; /* Space between buttons */
+    margin-top: 15px;
+}
+
+.button-group button, .button-group a {
+    padding: 10px 20px;
+}
+
+/* Preformatted Text */
+pre {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: 14px;
+    margin: 20px 0; /* Add margin around preformatted text */
+}
+
+input[type="number"] {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    width: 60px;
+}
+
+label {
+    font-weight: bold;
+    color: #305252;
+    margin-right: 10px; /* Space between label and input */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .menu li {
+        display: block;
+        margin: 10px auto;
+    }
+
+    .top-section, .bottom-section {
+        padding: 10px;
+    }
+
+    a, button {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .button-group {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 10px;
+    }
+}

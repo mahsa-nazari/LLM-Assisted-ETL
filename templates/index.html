@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETL Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Flexbox container for logs header */
+        .logs-header {
+            display: flex;
+            justify-content: space-between; /* Push button to the right */
+            align-items: center; /* Vertically align items */
+            margin-bottom: 10px;
+        }
+
+        .delete-logs-button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-logs-button:hover {
+            background-color: #c9302c;
+        }
+
+        /* Logs container styling */
+        .logs-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+
+        .api-key-section {
+            margin-top: 20px;
+        }
+
+        .save-api-key-button {
+            background-color: #90a2a2;
+            color: rgb(251, 251, 251);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .save-api-key-button:hover {
+            background-color: #90a2a2;
+        }
+
+        .api-key-input {
+            width: 300px;
+            padding: 5px;
+            margin-right: 10px;
+            border: 1px solid #90a2a2;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-section">
+            <h1>ETL Dashboard</h1>
+            <ul class="menu">
+                <li><a href="/upload">Upload CSV</a></li>
+                <li>
+                    <form action="/infer_schema" method="POST">
+                        <button type="submit">Infer Schema</button>
+                    </form>                    
+                </li>
+                <li><a href="/schema">Manage Schema and Run ETL Process</a></li>
+                <li><a href="/set_destination_db">Set Destination Database</a></li>
+            </li>
+            <div class="api-key-section" style="margin-top: 60px;">
+                <h2>Set OpenAI API Key</h2>
+                <form action="{{ url_for('save_api_key') }}" method="POST">
+                    <input type="password" name="api_key" placeholder="Enter OpenAI API Key" class="api-key-input" required>
+                    <!-- *** Added a dropdown for model selection (optional) -->
+                    <select name="model" class="model-dropdown">
+                        <option value="" selected>Choose Model (Optional)</option>
+                        <option value="gpt-4-0613">GPT-4-0613</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5-Turbo</option>
+                        <option value="gpt-4">GPT-4</option>
+                    </select>
+                    <!-- *** -->
+                    <button type="submit" class="save-api-key-button">Save API Key and Model</button>
+                </form>
+            </div>
+        </li>
+            </ul>
+        </div>
+        <div class="bottom-section">
+            <!-- Flexbox for heading and delete button -->
+            <div class="logs-header">
+                <h2>Application Logs</h2>
+                <form action="{{ url_for('delete_logs') }}" method="POST">
+                    <button type="submit" class="delete-logs-button">Delete All Logs</button>
+                </form>
+            </div>
+            <div id="logs" class="logs-container">
+                {{ logs|safe }}
+            </div>
+
+        </div>
+    </div>
+    <script>
+        // Automatically scroll the logs container to the bottom
+        document.addEventListener("DOMContentLoaded", function () {
+            const logsContainer = document.getElementById("logs");
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        });
+    </script>
+</body>
+</html>

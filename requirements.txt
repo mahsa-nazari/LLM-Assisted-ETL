@@ -1,0 +1,7 @@
+psycopg2-binary
+sqlalchemy
+pandas
+flask
+openai
+Flask-Security
+Flask-WTF

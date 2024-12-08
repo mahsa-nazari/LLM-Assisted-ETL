@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Application Logs</h1>
+        <div class="logs" style="white-space: pre-wrap;">{{ logs }}</div>
+        <a href="/" class="button">Back to Dashboard</a>
+    </div>
+</body>
+</html>

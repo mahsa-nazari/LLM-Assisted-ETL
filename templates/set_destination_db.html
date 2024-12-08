@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Set Destination PostgreSQL Database</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Set Destination PostgreSQL Database</h1>
+        <form method="POST" action="/set_destination_db">
+            <label for="db_host">Host:</label><br>
+            <input type="text" id="db_host" name="db_host" required><br><br>
+            
+            <label for="db_name">Database Name:</label><br>
+            <input type="text" id="db_name" name="db_name" required><br><br>
+            
+            <label for="db_user">Username:</label><br>
+            <input type="text" id="db_user" name="db_user" required><br><br>
+            
+            <label for="db_password">Password:</label><br>
+            <input type="password" id="db_password" name="db_password" required><br><br>
+            
+            <label for="db_port">Port (default: 5432):</label><br>
+            <input type="text" id="db_port" name="db_port" value="5432"><br><br>
+            
+            <button type="submit">Save</button>
+        </form>
+        <a href="/">Back to Dashboard</a>
+    </div>
+</body>
+</html>

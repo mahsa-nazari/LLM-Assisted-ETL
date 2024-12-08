@@ -12,6 +12,7 @@ venv/
 *.enc
 *.csv
 api_key.txt
+schema.json
 
 # Logs
 *.log
