@@ -225,7 +225,6 @@ def delete_logs():
     try:
         with open(LOG_FILE, "w") as f:
             f.truncate(0)  # Clear the log file
-        app.logger.info("All logs were deleted.")
     except Exception as e:
         flash(f"Failed to delete logs: {e}")
         app.logger.error(f"Error deleting logs: {e}")
