@@ -1,0 +1,56 @@
+# Python Bytecode Files
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual Environment
+venv/
+.env/
+
+# Environment Variables and Secrets
+.env
+*.enc
+*.csv
+api_key.txt
+
+# Logs
+*.log
+logs/
+app.log
+
+# IDE Settings
+.vscode/
+.idea/
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Cache and Temporary Files
+*.cache
+*.temp
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
+
+# Python Build Files
+build/
+dist/
+*.egg-info/
+
+# Node.js Files (if applicable)
+node_modules/
+
+# Docker Files
+*.dockerfile
+*.tar
+
+# Additional Tool Configurations
+.coverage
+pytest_cache/
+.mypy_cache/
