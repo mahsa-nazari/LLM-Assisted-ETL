@@ -47,3 +47,61 @@ This **ETL Dashboard** provides a simple, intuitive platform where users can:
 ### 4. **Adjustable Sample Rows**
 - Users can adjust the number of rows the LLM analyzes for schema inference, ensuring flexibility for different datasets.
 
+## Setup and Run the Dashboard
+
+### Prerequisites
+- **Python 3.8+**
+- **PostgreSQL** (or other supported destination databases)
+- An OpenAI API key for LLM integration.
+
+### Steps
+
+**1. Clone this repository and navigate to the directory**:
+   ```bash
+   git clone https://github.com/mahsa-nazari/LLM-Assisted-ETL.git
+   cd etl-dashboard
+   ```
+
+**2. Install dependencies**:
+   ```bash
+pip install -r requirements.txt
+   ```
+
+**3. Run the setup script to start the dashboard**:
+   ```bash
+./setup_and_run_dashboard.sh
+   ```
+
+### Dashboard Usage
+
+1. **Upload a CSV File**  
+   - Go to the **"Upload CSV"** section.  
+   - Upload your source CSV file.
+
+2. **Set Destination Database**  
+   - Configure the connection details for your destination database (e.g., host, port, username, password).
+
+3. **Configure OpenAI API**  
+   - Add your OpenAI API key in the **"Settings"** section.  
+   - Optionally, select the model from the list of valid models provided.
+
+4. **Schema Inference**  
+   - Click **"Infer Schema"** to let the LLM analyze your data and propose a schema.  
+   - Adjust the number of rows analyzed if needed.
+
+5. **Review and Edit Schema**  
+   - Navigate to the **"View/Edit Schema"** section to review the schema proposed by the LLM.  
+   - Make any necessary modifications in the **"Edit Schema"** section. Adjustments can include changing field types, renaming columns, or altering other schema attributes.  
+   - After making changes, ensure you click **"Update Schema"** to save and apply your edits.  
+   - Use the **"Samples to Analyze"** option to adjust the number of rows the LLM analyzes for schema generation. The default is set to 5 rows.  
+   - When you change the number of samples, the updated schema will be displayed in the **"Edit Schema"** section. Review it carefully, and if it meets your requirements, don't forget to click **"Update Schema"** to finalize the changes.  
+     - *Note:* Increasing the number of samples may lead to a more accurate schema but could also result in higher API costs.
+
+6. **Execute ETL**  
+   - After finalizing and approving the schema, initiate the ETL process by clicking **"Apply to PostgreSQL"**. This action will load the data into your configured destination database.
+
+### Logs and Monitoring  
+   - Logs for each step of the process are displayed on the dashboard. Regularly check these logs to ensure the workflow is progressing as expected.  
+   - The system incorporates multiple fallback mechanisms to handle errors and prevent crashes, enhancing user experience. Reviewing logs allows you to identify and resolve potential issues efficiently.
+
+
