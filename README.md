@@ -47,9 +47,9 @@ This **ETL Dashboard** provides a simple, intuitive platform where users can:
   - **Optimizes the data** to align with the constraints defined in the schema, reducing the need for manual pre-processing.
   - **Loads the processed data** into the destination database of your choice, ensuring a seamless transition from raw to structured data.
 
-
 ### 4. **Adjustable Sample Rows**
 - Users can adjust the number of rows the LLM analyzes for schema inference, ensuring flexibility for different datasets.
+
 
 ## Setup and Run the Dashboard
 
@@ -76,7 +76,7 @@ pip install -r requirements.txt
 ./setup_and_run_dashboard.sh
    ```
 
-**4. 4. **Access the dashboard** at [http://127.0.0.1:5000](http://127.0.0.1:5000).
+**4. Access the dashboard** at [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 
 ### Dashboard Usage
