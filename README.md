@@ -41,8 +41,12 @@ This **ETL Dashboard** provides a simple, intuitive platform where users can:
 
 ### 3. **Effortless ETL Execution**
 - Once the schema is approved, the system:
-  - **Transforms the data** according to the schema.
-  - **Loads the data** into a user-specified destination database.
+  - **Transforms the data** intelligently based on the approved schema:
+    - For **unique columns**, any repeated values are automatically resolved by appending a unique identifier, ensuring data integrity without manual intervention.
+    - For **required fields**, missing values (null or empty) are automatically filled with either `NaN` or a user-defined default value, maintaining consistency and minimizing errors downstream.
+  - **Optimizes the data** to align with the constraints defined in the schema, reducing the need for manual pre-processing.
+  - **Loads the processed data** into the destination database of your choice, ensuring a seamless transition from raw to structured data.
+
 
 ### 4. **Adjustable Sample Rows**
 - Users can adjust the number of rows the LLM analyzes for schema inference, ensuring flexibility for different datasets.
@@ -71,6 +75,9 @@ pip install -r requirements.txt
    ```bash
 ./setup_and_run_dashboard.sh
    ```
+
+**4. 4. **Access the dashboard** at [http://127.0.0.1:5000](http://127.0.0.1:5000).
+
 
 ### Dashboard Usage
 
