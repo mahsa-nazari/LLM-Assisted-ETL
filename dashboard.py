@@ -298,7 +298,8 @@ def schema():
             # Update sample rows for schema inference
             try:
                 new_sample_rows = request.form.get("sample_rows")
-                if new_sample_rows and new_sample_rows.isdigit() and int(new_sample_rows) > 0:
+                
+                if new_sample_rows.isdigit() and int(new_sample_rows) > 2 and int(new_sample_rows) != 5:
                     sample_rows = int(new_sample_rows)  # Update only if valid
                     session["sample_rows"] = sample_rows  # Save updated value in session
 
@@ -310,8 +311,8 @@ def schema():
                     # Infer schema using the updated number of sample rows
                     api_key = session["openai_api_key"]
                     client = OpenAI(api_key=api_key)
-                    schema_mapping_updated_sample_rows = infer_schema_logic(csv_file_path, client, sample_rows)
-
+                    model = session.get("selected_model", "gpt-3.5-turbo")
+                    schema_mapping_updated_sample_rows = infer_schema_logic(csv_file_path, client, model, sample_rows)
                     flash(f"Schema inferred using {sample_rows} sample rows successfully!")
                     app.logger.info(f"Schema updated with {sample_rows} sample rows.")
                 else:
