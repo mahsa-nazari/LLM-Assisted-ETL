@@ -66,18 +66,19 @@ This **ETL Dashboard** provides a simple, intuitive platform where users can:
    cd etl-dashboard
    ```
 
-**2. Install dependencies**:
-   ```bash
-pip install -r requirements.txt
-   ```
-
-**3. Create a virtual environment**:
+**2. Create a virtual environment**:
 
 ```bash
 Copy code
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
+
+**3. Install dependencies**:
+   ```bash
+pip install -r requirements.txt
+   ```
+
 
 **4. Run the setup script to start the dashboard**:
 
