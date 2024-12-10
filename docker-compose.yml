@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  flask-etl-dashboard:
+    build:
+      context: .
+    container_name: flask-etl-dashboard
+    ports:
+      - "5001:5000"
+    environment:
+      - FLASK_APP=app.dashboard
+      - FLASK_ENV=development
+      - DOCKER_ENV=true
+    networks:
+      - etl_dashboard_network
+    volumes:
+      - ./uploads:/uploads
+      - ./schema.json:/schema.json
+      - ./apy_key.txt:/apy_key.txt
+
+networks:
+  etl_dashboard_network:
+    driver: bridge

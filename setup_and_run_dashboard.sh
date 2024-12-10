@@ -49,7 +49,7 @@ else
 fi
 
 # Step 7: Set Flask environment variables
-export FLASK_APP=dashboard.py
+export FLASK_APP=app/dashboard.py   # Update for new folder structure
 export FLASK_ENV=development
 
 echo "Flask environment variables set."

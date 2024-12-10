@@ -3,86 +3,64 @@ import os
 import pandas as pd
 from app.transform import transform_data, load_data_to_postgres
 from app.llm_utils import infer_schema_logic
-import logging
-import json
-from sqlalchemy.sql import text
-from logging.handlers import RotatingFileHandler
 from openai import OpenAI
+from app.config import Config
+from app.logging_config import configure_logging
+import json
 
+# Initialize Flask app
 app = Flask(__name__)
-app.secret_key = "dev_secret_key"
+app.config.from_object(Config)
 
 # Configure logging
-LOG_FILE = os.path.join(os.path.abspath(os.getcwd()), "app.log")
-log_handler = RotatingFileHandler(LOG_FILE, maxBytes=100000, backupCount=10)
-log_handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-log_handler.setFormatter(formatter)
-app.logger.addHandler(log_handler)
-app.logger.setLevel(logging.INFO)
+configure_logging(app)
 
-
-if not os.path.exists(LOG_FILE):
-    open(LOG_FILE, "w").close()
-
-logging.basicConfig(
-    filename=LOG_FILE,
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    filemode="a"
-)
-
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-
-SCHEMA_FILE = "schema.json"
-TABLE_NAME = "harmonized_data"
-API_KEY_FILE = "api_key.txt"
-
-
-def test_api_connection(client):
+# Utility functions
+def ensure_file_exists(file_path, default_content=None):
     """
-    Tests the connection to the OpenAI API.
-    Logs whether the connection is successful.
+    Ensures that a file exists. If not, creates it with optional default content.
     """
-    try:
-        model = session.get("selected_model", "gpt-3.5-turbo")  # Default to gpt-3.5-turbo
-        response = client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "user", "content": "Test the OpenAI API connection."}
-            ],
-        )
-        if response:
-            logging.info(f"Successfully connected to the OpenAI API using model {model}.")
-        else:
-            logging.error(f"Connection to the OpenAI API failed: Empty response from model {model}.")
-    except Exception as e:
-        logging.error(f"Connection to the OpenAI API failed: {e}")
+    if not os.path.exists(file_path):
+        try:
+            with open(file_path, "w") as f:
+                if default_content:
+                    f.write(default_content)
+                else:
+                    f.write("")  # Create an empty file
+            app.logger.info(f"File created: {file_path}")
+        except Exception as e:
+            app.logger.error(f"Failed to create file {file_path}: {e}")
+            raise
+
+# --- Ensure Necessary Files Exist ---
+ensure_file_exists(app.config["API_KEY_FILE"])
+ensure_file_exists(app.config["SCHEMA_FILE"])
+ensure_file_exists(app.config["LOG_FILE"])
+
 
 @app.before_request
 def clear_flash_messages():
     session.pop('_flashes', None)
 def load_api_key():
     """Load the API key from a file during app startup."""
-    if os.path.exists(API_KEY_FILE):
-        try:
-            with open(API_KEY_FILE, "r") as f:
+    try:
+        if os.path.exists(api_key_file):
+            with open(api_key_file, "r") as f:
                 api_key = f.read().strip()
                 if api_key:
-                    session["openai_api_key"] = api_key  # Load into session
-                    app.logger.info("API key loaded from file successfully.")
-        except Exception as e:
-            app.logger.error(f"Failed to load API key from file: {e}")
-
-
+                    session["openai_api_key"] = api_key
+                    app.logger.info("API key loaded successfully from file.")
+        else:
+            app.logger.info("API key file not found; awaiting user input via UI.")
+    except Exception as e:
+        app.logger.error(f"Error loading API key: {e}")
 
 @app.route("/")
 def index():
     """Dashboard home page."""
+    log_file = app.config["LOG_FILE"]
     try:
-        with open(LOG_FILE, "r") as f:
+        with open(log_file, "r") as f:
             logs = f.read().replace("\n", "<br>")
     except FileNotFoundError:
         logs = "No logs available."
@@ -91,6 +69,7 @@ def index():
 @app.route("/save_api_key", methods=["POST"])
 def save_api_key():
     """Save the OpenAI API key."""
+    api_key_file=app.config["API_KEY_FILE"]
     try:
         api_key = request.form.get("api_key")
         selected_model = request.form.get("model")
@@ -100,7 +79,7 @@ def save_api_key():
             return redirect(url_for("index"))
 
         # Save the API key to the file
-        with open(API_KEY_FILE, "w") as f:
+        with open(api_key_file, "w") as f:
             f.write(api_key)
             
         # Store the API key in the session
@@ -127,6 +106,7 @@ def set_destination_db():
     if request.method == "POST":
         # Get the form data
         db_host = request.form.get("db_host")
+
         db_name = request.form.get("db_name")
         db_user = request.form.get("db_user")
         db_password = request.form.get("db_password")
@@ -167,7 +147,8 @@ def upload_file():
             return render_template("upload.html")
         
         # Saving the file
-        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+        upload_folder = app.config["UPLOAD_FOLDER"]
+        file_path = os.path.join(upload_folder, file.filename)
         try:
             file.save(file_path)
         except Exception as e:
@@ -186,19 +167,20 @@ def infer_schema():
     if not csv_file_path or not os.path.exists(csv_file_path):
         flash("No uploaded file found. Please upload a file first.")
         return redirect(url_for("index"))
+    
     app.logger.info(f"Starting Inferring Schema for: {csv_file_path} ...")
+    schema_file = app.config["SCHEMA_FILE"]
     try:
-        api_key = session["openai_api_key"]
-        if not api_key: 
-            raise ValueError("API key missing. Please set it before proceeding.")  
+        api_key = session.get("openai_api_key")
+        if not api_key:
+            raise ValueError("API key is missing. Please input it via the dashboard.")
+ 
         client = OpenAI(api_key=api_key)
-
         model = session.get("selected_model", "gpt-3.5-turbo")
         app.logger.info(f"Using model: {model}")
-
         schema_mapping = infer_schema_logic(csv_file_path, client, model=model) 
         session["schema_mapping"] = schema_mapping 
-        with open(SCHEMA_FILE, "w") as f:
+        with open(schema_file, "w") as f:
             json.dump(schema_mapping, f, indent=4)
         app.logger.info("Schema inferred and saved successfully.")
         return redirect(url_for("schema"))
@@ -208,9 +190,9 @@ def infer_schema():
         flash(f"Schema inference failed: {e}")
 
         # Fallback: Load the last saved schema if available
-        if os.path.exists(SCHEMA_FILE):
+        if os.path.exists(schema_file):
             try:
-                with open(SCHEMA_FILE, "r") as f:
+                with open(schema_file, "r") as f:
                     session["schema_mapping"] = json.load(f)
                 app.logger.info("Loaded the last saved schema as a fallback.")
                 flash("Using the last saved schema as a fallback.")
@@ -222,8 +204,9 @@ def infer_schema():
 @app.route("/delete_logs", methods=["POST"])
 def delete_logs():
     """Delete all logs from the log file."""
+    log_file = app.config["LOG_FILE"]
     try:
-        with open(LOG_FILE, "w") as f:
+        with open(log_file, "w") as f:
             f.truncate(0)  # Clear the log file
     except Exception as e:
         flash(f"Failed to delete logs: {e}")
@@ -244,10 +227,11 @@ def schema():
     schema_mapping_updated_sample_rows = None  # Holds inferred schema for Edit Schema
     sample_rows = session.get("sample_rows", 5)  # Default to 5 sample rows
     # Load existing schema if available
+    schema_file = app.config["SCHEMA_FILE"]
     if "schema_mapping" not in session:
-        if os.path.exists(SCHEMA_FILE):
+        if os.path.exists(schema_file):
             try:
-                with open(SCHEMA_FILE, "r") as f:
+                with open(schema_file, "r") as f:
                     session["schema_mapping"] = json.load(f)  # Load schema into session
             except (FileNotFoundError, json.JSONDecodeError) as e:
                 app.logger.error(f"Error loading schema: {e}")
@@ -261,7 +245,7 @@ def schema():
                 new_schema = request.form.get("schema")
                 schema_mapping = json.loads(new_schema)
                 session["schema_mapping"] = schema_mapping
-                with open(SCHEMA_FILE, "w") as f:
+                with open(schema_file, "w") as f:
                     json.dump(schema_mapping, f, indent=4)
                 app.logger.info("Schema updated and saved successfully.")
             except json.JSONDecodeError as e:
@@ -288,7 +272,8 @@ def schema():
             app.logger.info("Initiating ETL pipeline...")
             try:
                 transformed_df = transform_data(csv_file_path, schema_mapping)
-                load_data_to_postgres(transformed_df, TABLE_NAME, db_uri)
+                table_name = app.config["TABLE_NAME"]
+                load_data_to_postgres(transformed_df, table_name, db_uri)
                 app.logger.info("ETL pipeline executed successfully.")
             except Exception as e:
                 app.logger.error(f"Pipeline execution failed: {e}")
