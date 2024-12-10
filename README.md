@@ -71,12 +71,21 @@ This **ETL Dashboard** provides a simple, intuitive platform where users can:
 pip install -r requirements.txt
    ```
 
-**3. Run the setup script to start the dashboard**:
+**3. Create a virtual environment**:
+
+```bash
+Copy code
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+**4. Run the setup script to start the dashboard**:
+
    ```bash
 ./setup_and_run_dashboard.sh
    ```
 
-**4. Access the dashboard** at [http://127.0.0.1:5000](http://127.0.0.1:5000).
+**5. Access the dashboard** at [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 
 ### Dashboard Usage
