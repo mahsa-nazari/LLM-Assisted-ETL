@@ -52,7 +52,7 @@ This **ETL Dashboard** provides a simple, intuitive platform where users can:
 ### 4. **Adjustable Sample Rows**
 - Users can adjust the number of rows the LLM analyzes for schema inference, ensuring flexibility for different datasets.
 
-
+---
 ## Setup and Run the Dashboard
 
 ### Running Locally
@@ -94,19 +94,19 @@ chmod +x setup_and_run_dashboard.sh
    cd etl-dashboard
    ```
 
-**2.Build the Docker image for the dashboard:**:
+**2.Build the Docker image for the dashboard**:
    ```bash
     docker build -t flask-etl-dashboard .
    ```
 
-**3.Run the Docker Container:**:Run the container with a port of your choice and replace <custom-port> with your desired port number:
-
-    ```bash
+**3.Run the Docker Container**:
+Run the container with a port of your choice and replace <custom-port> with your desired port number
+```bash
     docker run -d -p <custom-port>:5000 --name flask-etl-dashboard flask-etl-dashboard
    ```
-   - **Note**: Avoid using port 5000 to prevent potential conflicts with other services.
+- **Note**: Avoid using port 5000 to prevent potential conflicts with other services.
 
-**4. Access the dashboard** at http://127.0.0.1:<custom-port>.
+**4. Access the dashboard** at http://127.0.0.1:custom-port.
 
 **5. To monitor the logs from the running container**:
 ```bash
@@ -118,7 +118,7 @@ chmod +x setup_and_run_dashboard.sh
     docker stop flask-etl-dashboard
     docker rm flask-etl-dashboard
    ```
-
+---
 ### Dashboard Usage
 
 1. **Upload a CSV File**  
@@ -127,32 +127,9 @@ chmod +x setup_and_run_dashboard.sh
 
 2. **Set Destination Database**  
    - Configure the connection details for your destination database (e.g., host, port, username, password). 
-   - You can configure the dashboard to connect to a PostgreSQL database either on your local machine or a remote server. This flexibility allows you to manage data processing pipelines regardless of where your database is hosted.
-    - For **local databases**, use localhost as the host.
-    - For **remote servers**, enter the server's IP address or domain name in the "Host" field.
-   #### 1. Running Locally
-When running locally, enter your database details in the dashboard's "Set Destination Database" form:
-
-**Example:**
-```yaml
-Host: localhost
-Database Name: postgres
-Username: postgres
-Password: your-password
-Port: 5432
-```
-
-   #### 1. Running in Docker
-When running in Docker, ensure to provide the appropriate host address for your setup. For macOS and Windows, use host.docker.internal if your database is on your local machine. For Linux, use your machine's IP address.
-
- **Example:**
-```yaml
-Host: host.docker.internal
-Database Name: postgres
-Username: postgres
-Password: your-password
-Port: 5432 
-```
+   - You can configure the dashboard to connect to a PostgreSQL database either on your local machine or a remote server. This is how you can fill the "Host" field correctly:
+      - For **local databases**, use "localhost" if running locally or "host.docker.internal"( for Linux, use your machine's IP address) if running in docker. 
+      - For **remote servers**, enter the server's IP address or domain name in the "Host" field.
 
 3. **Configure OpenAI API**   
    - Optionally, select the model from the list of valid models provided.
