@@ -3,9 +3,10 @@
 ## Overview
 
 ETL (Extract, Transform, Load) processes are critical in moving and transforming data from source systems to destination databases. However, they often come with significant challenges, especially when:
+- **Missing Column Names**: Sometimes, column names are missing and require analyzing the context of the data to assign appropriate names.
 - **The source data is messy**: Missing column names, incorrect data formats, and lack of restrictions are common issues.
 - **The dataset is large**: Manually cleaning and preparing large datasets is time-intensive and prone to errors.
-- **Technical expertise is limited**: Non-technical users struggle with data preparation and schema design.
+- **Technical expertise is limited**: Non-technical users often struggle with data preparation, schema design, and executing ETL (Extract, Transform, Load) processes efficiently.
 
 In such scenarios, **Large Language Models (LLMs)** offer a transformative approach by automating schema inference and simplifying ETL workflows. 
 
@@ -46,6 +47,7 @@ This **ETL Dashboard** provides a simple, intuitive platform where users can:
     - For **required fields**, missing values (null or empty) are automatically filled with either `NaN` or a user-defined default value, maintaining consistency and minimizing errors downstream.
   - **Optimizes the data** to align with the constraints defined in the schema, reducing the need for manual pre-processing.
   - **Loads the processed data** into the destination database of your choice, ensuring a seamless transition from raw to structured data.
+  - **Provides step-by-step logs and warnings** for each stage of the transformation process, enabling users to track potential issues effectively.
 
 ### 4. **Adjustable Sample Rows**
 - Users can adjust the number of rows the LLM analyzes for schema inference, ensuring flexibility for different datasets.
@@ -53,12 +55,12 @@ This **ETL Dashboard** provides a simple, intuitive platform where users can:
 
 ## Setup and Run the Dashboard
 
-### Prerequisites
+### Running Locally
+#### Prerequisites
 - **Python 3.8+**
-- **PostgreSQL** (or other supported destination databases)
+- **pip** 
+- **PostgreSQL**: A running PostgreSQL instance (local or on a remote server).
 - An OpenAI API key for LLM integration.
-
-### Steps
 
 **1. Clone this repository and navigate to the directory**:
    ```bash
@@ -66,19 +68,11 @@ This **ETL Dashboard** provides a simple, intuitive platform where users can:
    cd etl-dashboard
    ```
 
-**2. Create a virtual environment**:
+**2. Make the Setup Script Executable**:
 
 ```bash
-Copy code
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+chmod +x setup_and_run_dashboard.sh
 ```
-
-**3. Install dependencies**:
-   ```bash
-pip install -r requirements.txt
-   ```
-
 
 **4. Run the setup script to start the dashboard**:
 
@@ -88,6 +82,42 @@ pip install -r requirements.txt
 
 **5. Access the dashboard** at [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
+### Running with Docker
+#### Prerequisites
+- **Docker** 
+- **PostgreSQL**: A running PostgreSQL instance (local or on a remote server).
+- An OpenAI API key for LLM integration.
+
+**1. Clone this repository and navigate to the directory**:
+   ```bash
+   git clone https://github.com/mahsa-nazari/LLM-Assisted-ETL.git
+   cd etl-dashboard
+   ```
+
+**2.Build the Docker image for the dashboard:**:
+   ```bash
+    docker build -t flask-etl-dashboard .
+   ```
+
+**3.Run the Docker Container:**:Run the container with a port of your choice and replace <custom-port> with your desired port number:
+
+    ```bash
+    docker run -d -p <custom-port>:5000 --name flask-etl-dashboard flask-etl-dashboard
+   ```
+   - **Note**: Avoid using port 5000 to prevent potential conflicts with other services.
+
+**4. Access the dashboard** at http://127.0.0.1:<custom-port>.
+
+**5. To monitor the logs from the running container**:
+```bash
+    docker logs -f flask-etl-dashboard
+   ```
+
+**6. Stopping and removing the container**:
+```bash
+    docker stop flask-etl-dashboard
+    docker rm flask-etl-dashboard
+   ```
 
 ### Dashboard Usage
 
@@ -96,19 +126,43 @@ pip install -r requirements.txt
    - Upload your source CSV file.
 
 2. **Set Destination Database**  
-   - Configure the connection details for your destination database (e.g., host, port, username, password).
+   - Configure the connection details for your destination database (e.g., host, port, username, password). 
+   - You can configure the dashboard to connect to a PostgreSQL database either on your local machine or a remote server. This flexibility allows you to manage data processing pipelines regardless of where your database is hosted.
+    - For **local databases**, use localhost as the host.
+    - For **remote servers**, enter the server's IP address or domain name in the "Host" field.
+   #### 1. Running Locally
+When running locally, enter your database details in the dashboard's "Set Destination Database" form:
 
-3. **Configure OpenAI API**  
-   - Add your OpenAI API key in the **"Settings"** section.  
+**Example:**
+```yaml
+Host: localhost
+Database Name: postgres
+Username: postgres
+Password: your-password
+Port: 5432
+```
+
+   #### 1. Running in Docker
+When running in Docker, ensure to provide the appropriate host address for your setup. For macOS and Windows, use host.docker.internal if your database is on your local machine. For Linux, use your machine's IP address.
+
+ **Example:**
+```yaml
+Host: host.docker.internal
+Database Name: postgres
+Username: postgres
+Password: your-password
+Port: 5432 
+```
+
+3. **Configure OpenAI API**   
    - Optionally, select the model from the list of valid models provided.
+   - Add your OpenAI API key and press **"Save API Key and Model"**. 
 
 4. **Schema Inference**  
-   - Click **"Infer Schema"** to let the LLM analyze your data and propose a schema.  
-   - Adjust the number of rows analyzed if needed.
+   - Click **"Infer Schema"** to let the LLM analyze your data and propose a schema. After Schema is created the dashboard navigates you to **Review and Edit Schema** page to review the schema proposed by the LLM.
 
 5. **Review and Edit Schema**  
-   - Navigate to the **"View/Edit Schema"** section to review the schema proposed by the LLM.  
-   - Make any necessary modifications in the **"Edit Schema"** section. Adjustments can include changing field types, renaming columns, or altering other schema attributes.  
+   - Make any necessary modifications in the **"Edit Schema"** section. Adjustments can include any change as far as it is a valid schema.
    - After making changes, ensure you click **"Update Schema"** to save and apply your edits.  
    - Use the **"Samples to Analyze"** option to adjust the number of rows the LLM analyzes for schema generation. The default is set to 5 rows.  
    - When you change the number of samples, the updated schema will be displayed in the **"Edit Schema"** section. Review it carefully, and if it meets your requirements, don't forget to click **"Update Schema"** to finalize the changes.  
