@@ -11,38 +11,15 @@ import json
 # Initialize Flask app
 app = Flask(__name__)
 app.config.from_object(Config)
-
-# Configure logging
 configure_logging(app)
-
-# Utility functions
-def ensure_file_exists(file_path, default_content=None):
-    """
-    Ensures that a file exists. If not, creates it with optional default content.
-    """
-    if not os.path.exists(file_path):
-        try:
-            with open(file_path, "w") as f:
-                if default_content:
-                    f.write(default_content)
-                else:
-                    f.write("")  # Create an empty file
-            app.logger.info(f"File created: {file_path}")
-        except Exception as e:
-            app.logger.error(f"Failed to create file {file_path}: {e}")
-            raise
-
-# --- Ensure Necessary Files Exist ---
-ensure_file_exists(app.config["API_KEY_FILE"])
-ensure_file_exists(app.config["SCHEMA_FILE"])
-ensure_file_exists(app.config["LOG_FILE"])
-
 
 @app.before_request
 def clear_flash_messages():
     session.pop('_flashes', None)
+
 def load_api_key():
     """Load the API key from a file during app startup."""
+    api_key_file = app.config["API_KEY_FILE"]
     try:
         if os.path.exists(api_key_file):
             with open(api_key_file, "r") as f:
@@ -84,7 +61,6 @@ def save_api_key():
             
         # Store the API key in the session
         session["openai_api_key"] = api_key
-        # Log success
         app.logger.info("OpenAI API key was updated successfully.")
 
         # Store the selected model in the session
@@ -106,7 +82,6 @@ def set_destination_db():
     if request.method == "POST":
         # Get the form data
         db_host = request.form.get("db_host")
-
         db_name = request.form.get("db_name")
         db_user = request.form.get("db_user")
         db_password = request.form.get("db_password")
@@ -148,6 +123,7 @@ def upload_file():
         
         # Saving the file
         upload_folder = app.config["UPLOAD_FOLDER"]
+        os.makedirs(upload_folder, exist_ok=True)
         file_path = os.path.join(upload_folder, file.filename)
         try:
             file.save(file_path)
