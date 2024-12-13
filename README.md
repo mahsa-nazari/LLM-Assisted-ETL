@@ -94,29 +94,29 @@ chmod +x setup_and_run_dashboard.sh
    cd etl-dashboard
    ```
 
-**2.Build the Docker image for the dashboard**:
+**2.Build the Services**:
    ```bash
-    docker build -t flask-etl-dashboard .
+    docker-compose build
    ```
 
-**3.Run the Docker Container**:
+**3.Start the Services**:
 Run the container with a port of your choice and replace <custom-port> with your desired port number
 ```bash
-    docker run -d -p <custom-port>:5000 --name flask-etl-dashboard flask-etl-dashboard
+    docker-compose up -d
    ```
-- **Note**: Avoid using port 5000 to prevent potential conflicts with other services.
+- **Note**: Avoid using port 5000 to prevent potential conflicts.
 
 **4. Access the dashboard** at http://127.0.0.1:custom-port.
 
 **5. To monitor the logs from the running container**:
 ```bash
-    docker logs -f flask-etl-dashboard
+    docker-compose logs
    ```
 
-**6. Stopping and removing the container**:
+**6. Stopping and removing the container, networks and volumes**:
 ```bash
-    docker stop flask-etl-dashboard
-    docker rm flask-etl-dashboard
+    docker-compose down
+    docker-compose down --volumes
    ```
 ---
 ### Dashboard Usage
