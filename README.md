@@ -104,10 +104,10 @@ Run the container with a port of your choice and replace <custom-port> with your
 ```bash
     docker-compose up -d
    ```
-- **Note**: Avoid using port 5000 to prevent potential conflicts.
 
-**4. Access the dashboard** at http://127.0.0.1:custom-port.
-
+**4. Access the dashboard** at [http://127.0.0.1:5001](http://127.0.0.1:5001).
+- **Note**: You can change port 5001 in docker compose but avoid using port 5000 to prevent potential conflicts if you wish to locally run the dashboard as well.
+  
 **5. To monitor the logs from the running container**:
 ```bash
     docker-compose logs
