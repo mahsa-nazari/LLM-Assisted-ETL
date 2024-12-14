@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: mahsa-nazari/flask-etl-dashboard:latest
+          tags: mahsanazarii/flask-etl-dashboard:latest
 
   deploy:
     needs: build-and-push
