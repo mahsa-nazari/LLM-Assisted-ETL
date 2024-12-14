@@ -94,18 +94,17 @@ chmod +x setup_and_run_dashboard.sh
    cd etl-dashboard
    ```
 
-**2.Build the Services**:
-   ```bash
-    docker-compose build
-   ```
-
-**3.Start the Services**:
+**2.Start the Services**:
 Run the container with a port of your choice and replace <custom-port> with your desired port number
 ```bash
     docker-compose up -d
    ```
+This will:
 
-**4. Access the dashboard** at [http://127.0.0.1:5001](http://127.0.0.1:5001).
+   - Pull the Docker image from Docker Hub.
+   - Start the application with the default port 5001 mapped to the container.
+
+**3. Access the dashboard** at [http://127.0.0.1:5001](http://127.0.0.1:5001).
 - **Note**: You can change port 5001 in the docker-compose file but avoid using port 5000 to prevent potential conflicts if you wish to locally run the dashboard as well.
   
 **5. To monitor the logs from the running container**:
