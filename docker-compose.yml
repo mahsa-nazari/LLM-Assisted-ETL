@@ -10,7 +10,7 @@ services:
       - FLASK_APP=app.dashboard
       - FLASK_ENV=development
       - DOCKER_ENV=true
-      - SECRET_KEY=your_super_secret_key
+      - SECRET_KEY=your_secret_key
     networks:
       - etl_dashboard_network
     volumes:
