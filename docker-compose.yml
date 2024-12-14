@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   flask-etl-dashboard:
-    build:
-      context: .
+    image: mahsanazarii/flask-etl-dashboard:latest
     container_name: flask-etl-dashboard
     ports:
       - "5001:5000"
@@ -17,8 +16,6 @@ services:
     volumes:
       - ./uploads:/app/uploads
       - ./etl_info:/app/etl_info
-
-
 
 networks:
   etl_dashboard_network:
