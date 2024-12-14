@@ -95,15 +95,19 @@ chmod +x setup_and_run_dashboard.sh
    ```
 
 **2.Start the Service**:
-```bash
+   ```bash
     docker-compose up -d
-```
+   ```
+- **Notes**: 
+  - You can change port 5001 in the `docker-compose.yml` file. Avoid using port 5000 to prevent potential conflicts if you also wish to run the dashboard locally.
+  - Update `SECRET_KEY` in `docker-compose.yml` to enhance application security.
+  
 This will:
    - Pull the Docker image from Docker Hub.
    - Start the application with the default port 5001 mapped to the container.
 
 **3. Access the dashboard** at [http://127.0.0.1:5001](http://127.0.0.1:5001).
-- **Note**: You can change port 5001 in the docker-compose file but avoid using port 5000 to prevent potential conflicts if you also wish to run the dashboard locally.
+
   
 **5. To monitor the logs from the running container**:
 ```bash
